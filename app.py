@@ -34,27 +34,15 @@ def init():
 def convert_time(secs):
     return datetime.timedelta(seconds=round(secs))
 
-def get_youtube(video_url):
-    yt = YouTube(video_url)
-    abs_video_path = yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first().download()
-    print("-----Success downloaded video-----")
-    print(abs_video_path)
-    return abs_video_path
 
-def speech_to_text(video_file_path, audio_file, selected_source_lang, whisper_model, num_speakers):
+
+def speech_to_text(audio_file, selected_source_lang, whisper_model, num_speakers):
     model = whisper.load_model(whisper_model)
     time_start = time.time()
-    if(video_file_path == None):
-        raise ValueError("Error no video input")
-    print(video_file_path)
+
 
     try:
         # Read and convert youtube video
-        _,file_ending = os.path.splitext(f'{video_file_path}')
-        print(f'file enging is {file_ending}')
-        audio_file_2 = video_file_path.replace(file_ending, ".wav")
-        print("-----starting conversion to wav-----")
-        os.system(f'ffmpeg -i "{video_file_path}" -ar 16000 -ac 1 -c:a pcm_s16le "{audio_file_2}"')
 
         output_file = "example.wav"
 
@@ -142,7 +130,7 @@ def inference(model_inputs:dict) -> dict:
     global embedding_model
 
     # Parse out your arguments
-    youtube_url = model_inputs.get('youtube_url', "https://www.youtube.com/watch?v=-UX0X45sYe4")
+    audio_file=model_inputs.get('audio_file', "stream1.mp3")
     selected_source_lang = model_inputs.get('language', "en")
     number_speakers = model_inputs.get('num_speakers', 2)
 
@@ -150,8 +138,8 @@ def inference(model_inputs:dict) -> dict:
         return {'message': "No input provided"}
 
     # Run the model
-    video_in = get_youtube(youtube_url)
-    transcription_df = speech_to_text(video_in,audio_file, selected_source_lang, model_name, number_speakers)
+    #video_in = get_youtube(youtube_url)
+    transcription_df = speech_to_text(audio_file, selected_source_lang, model_name, number_speakers)
     # print(transcription_df)
 
     # Return the results as a dictionary

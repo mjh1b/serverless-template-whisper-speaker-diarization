@@ -8,7 +8,7 @@ import banana_dev as banana
 
 
 model_payload = {
-    "youtube_url":"https://www.youtube.com/watch?v=-UX0X45sYe4",
+    "audio_file":"stream1.mp3",
     "language": "en",
     "num_speakers": 2
 }
